@@ -57,7 +57,24 @@ int main(int argc, char const *argv[])
 
     s = create_student(5);
     list_add(&s->list, &shead->list);
+    //遍历链表
+    //遍历小结构体
+    //参数一 不断遍历next小结构体指针
+    // 参数二 头节点小结构体的地址
+    struct list_head *pos;
+    list_for_each(pos, &shead->list)
+    {
+        // pos是不断更新的小结构体
 
+        // 想要拿到数据必须使用大结构体
+        // 内核链表提供了一个小结构体转大结构体是的方法
+        // 参数一：小结构体指针
+        // 参数二：大结构体类型
+        // 参数三：小结构体在大结构体内的成员名
+        StudentNode *sn = list_entry(pos, StudentNode, list);
+        printf("%d ", sn->data);
+    }
+    printf("\n");
     // 老师节点头插
     TeacherNode *t = create_teacher("小王");
     list_add(&t->list, &thead->list);
@@ -68,6 +85,19 @@ int main(int argc, char const *argv[])
     list_add(&t->list, &thead->list);
     t = create_teacher("小赵");
     list_add(&t->list, &thead->list);
+
+list_for_each(pos, &thead->list)
+    {
+        // pos是不断更新的小结构体
+
+        // 想要拿到数据必须使用大结构体
+        // 内核链表提供了一个小结构体转大结构体是的方法
+        // 参数一：小结构体指针
+        // 参数二：大结构体类型
+        // 参数三：小结构体在大结构体内的成员名
+        TeacherNode *tn = list_entry(pos, TeacherNode, list);
+        printf("%s \n", tn->name);
+    }
 
     return 0;
 }
