@@ -57,7 +57,7 @@ int main(int argc, char const *argv[])
 
     s = create_student(5);
     list_add(&s->list, &shead->list);
-    //遍历链表
+    //遍历链表   方法一
     //遍历小结构体
     //参数一 不断遍历next小结构体指针
     // 参数二 头节点小结构体的地址
@@ -75,6 +75,43 @@ int main(int argc, char const *argv[])
         printf("%d ", sn->data);
     }
     printf("\n");
+    //遍历链表   方法二
+    //list_for_each_prev   倒序遍历小结构体   
+    //参数一 不断遍历next小结构体指针
+    // 参数二 头节点小结构体的地址
+
+    //遍历链表   方法三   // 没有倒叙模式
+    //list_for_each_safe   安全模式遍历小结构体  
+    //在遍历过程中删除节点或添加节点
+    //参数一 不断遍历next小结构体指针
+    //参数二 避免指针删除时指错顺序小结构体指针
+    //参数三 头结点小结构体地址
+    struct list_head *pos1, *n;
+    list_for_each_safe(pos1, n, &shead->list){
+        StudentNode *s = list_entry(pos1, StudentNode, list);
+        printf("%d ", s->data);
+    }
+    printf("\n");
+    // 遍历链表 四
+    // 遍历链表并且直接将其转换为大结构体
+    //参数一   大结构体指针
+    // 参数二 头节点小结构体的地址
+    // 参数三 小结构体在大结构体内成员名
+    StudentNode *sp;
+    list_for_each_entry(sp, &shead->list, list){
+        printf("%d ", sp->data);
+    }
+    printf("\n");
+    //// 遍历链表 方法五
+    // list_for_each_entry_safe 安全模式遍历链表并直接将其转为大结构体
+    StudentNode *sp1, *sn;
+    list_for_each_entry_safe(sp1, sn, &shead->list, list)
+    {
+        printf("%d ", sp1->data);
+    };
+    printf("\n");
+
+
     // 老师节点头插
     TeacherNode *t = create_teacher("小王");
     list_add(&t->list, &thead->list);
@@ -96,7 +133,7 @@ list_for_each(pos, &thead->list)
         // 参数二：大结构体类型
         // 参数三：小结构体在大结构体内的成员名
         TeacherNode *tn = list_entry(pos, TeacherNode, list);
-        printf("%s \n", tn->name);
+        printf("%s ", tn->name);
     }
 
     return 0;
