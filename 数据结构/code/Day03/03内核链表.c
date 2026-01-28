@@ -57,9 +57,9 @@ int main(int argc, char const *argv[])
 
     s = create_student(5);
     list_add(&s->list, &shead->list);
-    //遍历链表   方法一
-    //遍历小结构体
-    //参数一 不断遍历next小结构体指针
+    // 遍历链表   方法一
+    // 遍历小结构体
+    // 参数一 不断遍历next小结构体指针
     // 参数二 头节点小结构体的地址
     struct list_head *pos;
     list_for_each(pos, &shead->list)
