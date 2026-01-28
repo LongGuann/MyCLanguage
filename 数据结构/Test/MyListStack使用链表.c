@@ -46,7 +46,6 @@ int push(ListStack *Stack, int data)
     Stack->size++;
 
     return 1;
-
 }
 
 // 判断栈是否为空
