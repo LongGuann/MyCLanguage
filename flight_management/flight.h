@@ -46,6 +46,14 @@ void displayFlightInfo(FlightSystem *s);
 
 void displayFlightInfoNumber(FlightSystem *s, char *flightNumber);
 
+void displayFlightInfoDeparture(FlightSystem *s, char *departure);
+
+void displayFlightInfoDestination(FlightSystem *s, char *destination);
+
+void displayFlightInfoTime(FlightSystem *s, DateTime time);
+
+void displayFlightInfoFrice(FlightSystem *s, float price);
+
 void displayFlightInfoUser(FlightSystem *s);
 
 void moco_data(FlightSystem *s);

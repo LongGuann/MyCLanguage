@@ -72,6 +72,7 @@ void displayFlightInfo(FlightSystem *s)
     {
         printf("航班号 %s \n", p->flight_number);
         printf("出发地 %s -> 目的地 %s \n", p->departure_city, p->destination);
+        printf("本航班机票价格 %d", p->price);
         printf("出发时间 %d年 %d月 %d日 %d时 %d分 \n", p->departure_time.year,
                p->departure_time.month,
                p->departure_time.day,
@@ -91,7 +92,7 @@ void displayFlightInfo(FlightSystem *s)
         }
     }
 }
-// 航班查询-航班号版本
+// 航班查询 - 航班号版本
 void displayFlightInfoNumber(FlightSystem *s, char *flightNumber)
 {
     system("clear");
@@ -111,6 +112,7 @@ void displayFlightInfoNumber(FlightSystem *s, char *flightNumber)
         {
             printf("航班号 %s \n", p->flight_number);
             printf("出发地 %s -> 目的地 %s \n", p->departure_city, p->destination);
+            printf("本航班机票价格 %d", p->price);
             printf("出发时间 %d年 %d月 %d日 %d时 %d分 \n", p->departure_time.year,
                    p->departure_time.month,
                    p->departure_time.day,
@@ -131,45 +133,177 @@ void displayFlightInfoNumber(FlightSystem *s, char *flightNumber)
         }
     }
 }
-// 航班数据
-void moco_data(FlightSystem *s)
+
+// 航班查询 - 始发地版本
+void displayFlightInfoDeparture(FlightSystem *s, char *departure)
 {
-    DateTime date = {
-        .year = 2026,  // 年
-        .month = 2,    // 月
-        .day = 10,     // 日
-        .hour = 9,     // 时
-        .minute = 45}; // 分
+    system("clear");
 
-    Flight *f = newFilght("NH3601", "北京", "广州", 450, 300, date);
+    if (s->flight_count == 0)
+    {
+        printf("今日暂无航班信息!\n");
+        sleep(2);
+        return;
+    }
 
-    list_add_tail(&f->list, &(s->flights->list));
+    struct list_head *head = &(s->flights->list);
+    Flight *p;
+    list_for_each_entry(p, head, list)
+    {
+        if (strcmp(departure, p->departure_city) == 0)
+        {
+            printf("航班号 %s \n", p->flight_number);
+            printf("出发地 %s -> 目的地 %s \n", p->departure_city, p->destination);
+            printf("本航班机票价格 %d", p->price);
+            printf("出发时间 %d年 %d月 %d日 %d时 %d分 \n", p->departure_time.year,
+                   p->departure_time.month,
+                   p->departure_time.day,
+                   p->departure_time.hour,
+                   p->departure_time.minute);
+            printf("-------------------------\n");
+        }
+    }
 
-    s->flight_count++;
-
-    date.hour = 10;
-
-    f = newFilght("NH3602", "上海", "广州", 450, 300, date);
-
-    list_add_tail(&f->list, &(s->flights->list));
-    s->flight_count++;
-
-    date.hour = 11;
-
-    f = newFilght("NH3603", "呼和浩特", "广州", 450, 300, date);
-
-    list_add_tail(&f->list, &(s->flights->list));
-
-    s->flight_count++;
-
-    date.hour = 12;
-
-    f = newFilght("NH3607", "乌鲁木齐", "广州", 450, 300, date);
-
-    list_add_tail(&f->list, &(s->flights->list));
-    s->flight_count++;
+    printf("按Q退出查看!\n");
+    char ch = 0;
+    while (1)
+    {
+        scanf("%c", &ch);
+        if (ch == 'Q' || ch == 'q')
+        {
+            return;
+        }
+    }
 }
 
+// 航班查询 - 目的地版本
+void displayFlightInfoDestination(FlightSystem *s, char *destination)
+{
+    system("clear");
+
+    if (s->flight_count == 0)
+    {
+        printf("今日暂无航班信息!\n");
+        sleep(2);
+        return;
+    }
+
+    struct list_head *head = &(s->flights->list);
+    Flight *p;
+    list_for_each_entry(p, head, list)
+    {
+        if (strcmp(destination, p->destination) == 0)
+        {
+            printf("航班号 %s \n", p->flight_number);
+            printf("出发地 %s -> 目的地 %s \n", p->departure_city, p->destination);
+            printf("本航班机票价格 %d", p->price);
+            printf("出发时间 %d年 %d月 %d日 %d时 %d分 \n", p->departure_time.year,
+                   p->departure_time.month,
+                   p->departure_time.day,
+                   p->departure_time.hour,
+                   p->departure_time.minute);
+            printf("-------------------------\n");
+        }
+    }
+
+    printf("按Q退出查看!\n");
+    char ch = 0;
+    while (1)
+    {
+        scanf("%c", &ch);
+        if (ch == 'Q' || ch == 'q')
+        {
+            return;
+        }
+    }
+}
+
+// 航班查询 - 时间版
+void displayFlightInfoTime(FlightSystem *s, DateTime data)
+{
+    system("clear");
+
+    if (s->flight_count == 0)
+    {
+        printf("今日暂无航班信息!\n");
+        sleep(2);
+        return;
+    }
+
+    struct list_head *head = &(s->flights->list);
+    Flight *p;
+    list_for_each_entry(p, head, list)
+    {
+        if (data.day == p->departure_time.day && data.month == p->departure_time.month && data.year == p->departure_time.year)
+        {
+            printf("航班号 %s \n", p->flight_number);
+            printf("出发地 %s -> 目的地 %s \n", p->departure_city, p->destination);
+            printf("本航班机票价格 %d", p->price);
+            printf("出发时间 %d年 %d月 %d日 %d时 %d分 \n", p->departure_time.year,
+                   p->departure_time.month,
+                   p->departure_time.day,
+                   p->departure_time.hour,
+                   p->departure_time.minute);
+            printf("-------------------------\n");
+        }
+    }
+
+    printf("按Q退出查看!\n");
+    char ch = 0;
+    while (1)
+    {
+        scanf("%c", &ch);
+        if (ch == 'Q' || ch == 'q')
+        {
+            return;
+        }
+    }
+}
+
+// 航班查询 - 价格版
+void displayFlightInfoFrice(FlightSystem *s, float price)
+{
+    system("clear");
+
+    if (s->flight_count == 0)
+    {
+        printf("今日暂无航班信息!\n");
+        sleep(2);
+        return;
+    }
+
+    struct list_head *head = &(s->flights->list);
+    Flight *p;
+    float price_max = price + 200;
+    float price_min = price - 200;
+
+    list_for_each_entry(p, head, list)
+    {
+        if (p->price >= price_min && p->price <= price_max)
+        {
+            printf("航班号 %s \n", p->flight_number);
+            printf("出发地 %s -> 目的地 %s \n", p->departure_city, p->destination);
+            printf("本航班机票价格 %d", p->price);
+            printf("出发时间 %d年 %d月 %d日 %d时 %d分 \n", p->departure_time.year,
+                   p->departure_time.month,
+                   p->departure_time.day,
+                   p->departure_time.hour,
+                   p->departure_time.minute);
+            printf("-------------------------\n");
+        }
+    }
+
+    printf("按Q退出查看!\n");
+    char ch = 0;
+    while (1)
+    {
+        scanf("%c", &ch);
+        if (ch == 'Q' || ch == 'q')
+        {
+            return;
+        }
+    }
+}
 // 航班查询用户多样版本
 void displayFlightInfoUser(FlightSystem *s)
 {
@@ -195,33 +329,101 @@ void displayFlightInfoUser(FlightSystem *s)
         case FLIGHT_NUMBER: // 航班号查询
             system("clear");
             printf("请输入航班号 \n");
-            char ch[20];
-            scanf("%s", ch);
+            char ch_num[20];
+            scanf("%s", ch_num);
 
             int c;
             while ((c = getchar()) != '\n' && c != EOF)
                 ;
-            displayFlightInfoNumber(s, ch);
+            displayFlightInfoNumber(s, ch_num);
             break;
         case FLIGHT_DEPARTURE: // 航班始发站查询
             system("clear");
+            printf("请输入始发站 \n");
+            char ch_departure[20];
+            scanf("%s", ch_departure);
 
+            while ((c = getchar()) != '\n' && c != EOF)
+                ;
+            displayFlightInfoDeparture(s, ch_departure);
             break;
         case FLIGHT_DESTINATION: // 航班目的地查询
-            // TODO: 管理员登录
             system("clear");
+            printf("请输入目的地 \n");
+            char ch_destination[20];
+            scanf("%s", ch_destination);
+
+            while ((c = getchar()) != '\n' && c != EOF)
+                ;
+            displayFlightInfoDestination(s, ch_destination);
 
             break;
         case FLIGHT_TIME: // 航班出发时间查询
             system("clear");
+            DateTime ch_time;
+            printf("请输入出发时间 \n");
+
+            scanf("%d %d %d", &ch_time.year, &ch_time.month, &ch_time.day);
+
+            while ((c = getchar()) != '\n' && c != EOF)
+                ;
+            displayFlightInfoTime(s, ch_time);
 
             break;
         case FLIGHT_PRICE: // 航班价格查询
             system("clear");
+            float ch_frice;
+            printf("请输入机票价格 \n");
+
+            scanf("%f", &ch_frice);
+
+            while ((c = getchar()) != '\n' && c != EOF)
+                ;
+            displayFlightInfoFrice(s, ch_frice);
 
             break;
         default:
+            return;
             break;
         }
     }
+}
+
+// 航班数据
+void moco_data(FlightSystem *s)
+{
+    DateTime date = {
+        .year = 2026,  // 年
+        .month = 2,    // 月
+        .day = 10,     // 日
+        .hour = 9,     // 时
+        .minute = 45}; // 分
+
+    Flight *f = newFilght("NH3601", "北京", "广州", 900, 300, date);
+
+    list_add_tail(&f->list, &(s->flights->list));
+
+    s->flight_count++;
+
+    date.hour = 10;
+
+    f = newFilght("NH3602", "上海", "广州", 400, 400, date);
+
+    list_add_tail(&f->list, &(s->flights->list));
+    s->flight_count++;
+
+    date.hour = 11;
+
+    f = newFilght("NH3603", "呼和浩特", "广州", 300, 300, date);
+
+    list_add_tail(&f->list, &(s->flights->list));
+
+    s->flight_count++;
+
+    date.hour = 12;
+
+    f = newFilght("NH3607", "乌鲁木齐", "广州", 200, 200, date);
+
+    list_add_tail(&f->list, &(s->flights->list));
+    s->flight_count++;
 }
