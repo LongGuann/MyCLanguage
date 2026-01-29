@@ -10,4 +10,5 @@ int update_filght_info(FlightSystem * system, const char * flight_number);
 
 // 航班删除
 int delete_filght(FlightSystem * system, const char * flight_number);
+
 #endif
