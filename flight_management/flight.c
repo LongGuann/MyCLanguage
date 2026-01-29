@@ -1,10 +1,10 @@
 #include "flight.h"
 
-Flight *newFilght(char *flight_number,
-                  char *destination,
-                  char *departure_city,
-                  float price,
-                  int total_seats,
+Flight *newFilght(char *flight_number,  // 航班号
+                  char *destination,    // 终点站
+                  char *departure_city, // 始发站
+                  float price,          // 价格
+                  int total_seats,      // 座位数
                   DateTime departure_time)
 {
     Flight *f = malloc(sizeof(Flight));
@@ -25,6 +25,16 @@ Flight *newFilght(char *flight_number,
     return f;
 }
 
+// 枚举结构体 用来表示选择航班查询条件
+enum FLIGHTINFO
+{
+    FLIGHT_NUMBER = 1,
+    FLIGHT_DEPARTURE,
+    FLIGHT_DESTINATION,
+    FLIGHT_TIME,
+    FLIGHT_PRICE,
+};
+
 FlightSystem *initFilghtSystem()
 {
     DateTime time = {};
@@ -43,7 +53,7 @@ FlightSystem *initFilghtSystem()
     s->flight_count = 0;
     return s;
 }
-
+// 航班查询
 void displayFlightInfo(FlightSystem *s)
 {
 
@@ -62,6 +72,11 @@ void displayFlightInfo(FlightSystem *s)
     {
         printf("航班号 %s \n", p->flight_number);
         printf("出发地 %s -> 目的地 %s \n", p->departure_city, p->destination);
+        printf("出发时间 %d年 %d月 %d日 %d时 %d分 \n", p->departure_time.year,
+               p->departure_time.month,
+               p->departure_time.day,
+               p->departure_time.hour,
+               p->departure_time.minute);
         printf("-------------------------\n");
     }
 
@@ -74,18 +89,57 @@ void displayFlightInfo(FlightSystem *s)
         {
             return;
         }
-        
     }
 }
+// 航班查询-航班号版本
+void displayFlightInfoNumber(FlightSystem *s, char *flightNumber)
+{
+    system("clear");
 
+    if (s->flight_count == 0)
+    {
+        printf("今日暂无航班信息!\n");
+        sleep(2);
+        return;
+    }
+
+    struct list_head *head = &(s->flights->list);
+    Flight *p;
+    list_for_each_entry(p, head, list)
+    {
+        if (strcmp(flightNumber, p->flight_number) == 0)
+        {
+            printf("航班号 %s \n", p->flight_number);
+            printf("出发地 %s -> 目的地 %s \n", p->departure_city, p->destination);
+            printf("出发时间 %d年 %d月 %d日 %d时 %d分 \n", p->departure_time.year,
+                   p->departure_time.month,
+                   p->departure_time.day,
+                   p->departure_time.hour,
+                   p->departure_time.minute);
+            printf("-------------------------\n");
+        }
+    }
+
+    printf("按Q退出查看!\n");
+    char ch = 0;
+    while (1)
+    {
+        scanf("%c", &ch);
+        if (ch == 'Q' || ch == 'q')
+        {
+            return;
+        }
+    }
+}
+// 航班数据
 void moco_data(FlightSystem *s)
 {
     DateTime date = {
-        .year = 2026,
-        .month = 2,
-        .day = 10,
-        .hour = 9,
-        .minute = 45};
+        .year = 2026,  // 年
+        .month = 2,    // 月
+        .day = 10,     // 日
+        .hour = 9,     // 时
+        .minute = 45}; // 分
 
     Flight *f = newFilght("NH3601", "北京", "广州", 450, 300, date);
 
@@ -114,4 +168,60 @@ void moco_data(FlightSystem *s)
 
     list_add_tail(&f->list, &(s->flights->list));
     s->flight_count++;
+}
+
+// 航班查询用户多样版本
+void displayFlightInfoUser(FlightSystem *s)
+{
+    while (1)
+    {
+        enum FLIGHTINFO selected;
+        // 每次打印内清下屏幕
+        system("clear");
+
+        printf("\n=== 航班信息查询系统======\n");
+        printf("1. 航班号查询 \n");
+        printf("2. 航班始发站查询 \n");
+        printf("3. 航班目的地查询 \n");
+        printf("4. 航班出发时间查询 \n");
+        printf("5. 航班价格查询 \n");
+        printf("6. 退出查询 \n");
+
+        printf("请选择: ");
+        scanf("%d", (int *)&selected);
+
+        switch (selected)
+        {
+        case FLIGHT_NUMBER: // 航班号查询
+            system("clear");
+            printf("请输入航班号 \n");
+            char ch[20];
+            scanf("%s", ch);
+
+            int c;
+            while ((c = getchar()) != '\n' && c != EOF)
+                ;
+            displayFlightInfoNumber(s, ch);
+            break;
+        case FLIGHT_DEPARTURE: // 航班始发站查询
+            system("clear");
+
+            break;
+        case FLIGHT_DESTINATION: // 航班目的地查询
+            // TODO: 管理员登录
+            system("clear");
+
+            break;
+        case FLIGHT_TIME: // 航班出发时间查询
+            system("clear");
+
+            break;
+        case FLIGHT_PRICE: // 航班价格查询
+            system("clear");
+
+            break;
+        default:
+            break;
+        }
+    }
 }

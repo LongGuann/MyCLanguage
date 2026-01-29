@@ -44,6 +44,10 @@ FlightSystem *initFilghtSystem();
 
 void displayFlightInfo(FlightSystem *s);
 
+void displayFlightInfoNumber(FlightSystem *s, char *flightNumber);
+
+void displayFlightInfoUser(FlightSystem *s);
+
 void moco_data(FlightSystem *s);
 
 #endif
