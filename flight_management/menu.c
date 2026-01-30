@@ -6,6 +6,7 @@ User *user = NULL;
 char Username[20];
 char PassWord[20];
 char PassWordEctype[20];
+char flight_number[20];
 
 enum MAINMENU
 {
@@ -67,6 +68,7 @@ void main_menu(FlightSystem *s)
         }
     }
 }
+
 // 用户注册页面
 void user_register_menu(FlightSystem *s)
 {
@@ -155,6 +157,7 @@ void user_register_menu(FlightSystem *s)
         }
     }
 }
+
 // 用户登陆界面
 void user_login_menu(FlightSystem *s)
 {
@@ -188,6 +191,17 @@ void user_login_menu(FlightSystem *s)
 
     printf("\n");
 }
+
+// 用户菜单变量
+enum USERMENU
+{
+    USER_FLIGHT_INFO = 1,
+    USER_FLIGHT_SUBSCRUBE,
+    USER_DEL_SUBSCRUBE,
+    USER_LOOK_SUBSCRUBE,
+    USER_LOG_OUT,
+};
+
 // 用户菜单
 void user_menu(FlightSystem *s)
 {
@@ -208,11 +222,40 @@ void user_menu(FlightSystem *s)
 
         switch (selected)
         {
-        case 1:
+        case USER_FLIGHT_INFO:
             displayFlightInfoUser(s);
-            // displayFlightInfo(s);
             break;
-        case 5:
+        case USER_FLIGHT_SUBSCRUBE:
+        {
+            int subFlag;
+            subFlag = user_filght_subscribe(s);
+            if (subFlag == 1 && user != NULL)
+            {
+                // user_filght_subscribe(s);
+                user_subscribe(user, flight_number);
+                sleep(1);
+            }
+            break;
+        }
+
+        case USER_DEL_SUBSCRUBE:
+        {
+            int subFlag2;
+            subFlag2 = user_filght_del_subscribe(s);
+            if (subFlag2 == 1 && user != NULL)
+            {
+                // user_filght_subscribe(s);
+                user_del_subscribe(user, flight_number);
+                sleep(1);
+            }
+            break;
+        }
+
+        case USER_LOOK_SUBSCRUBE:
+
+            break;
+
+        case USER_LOG_OUT:
             printf("退出成功!\n");
             return;
             break;
@@ -293,6 +336,25 @@ void admin_menu(FlightSystem *s)
                 {
                     User *user = list_entry(pos, User, list);
                     printf("%d. 用户名：%s\n", count++, user->username);
+                }
+                User *Pos;
+                if (!list_empty(&Pos->subscribe_list))
+                {
+                    printf("   预订记录:\n");
+                    Flight *us;
+                    int sub_count = 1;
+                    list_for_each_entry(us, &Pos->subscribe_list, list)
+                    {
+                        printf("     %d. 航班号: %s, 预订时间: %d-%02d-%02d %02d:%02d\n",
+                               sub_count++, us->flight_number,
+                               us->departure_time.year, us->departure_time.month,
+                               us->departure_time.day, us->departure_time.hour,
+                               us->departure_time.minute);
+                    }
+                }
+                else
+                {
+                    printf("   暂无预订记录\n");
                 }
             }
             printf("按任意键继续...");
