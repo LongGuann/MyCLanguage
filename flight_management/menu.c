@@ -240,19 +240,20 @@ void user_menu(FlightSystem *s)
 
         case USER_DEL_SUBSCRUBE:
         {
-            int subFlag2;
-            subFlag2 = user_filght_del_subscribe(s);
-            if (subFlag2 == 1 && user != NULL)
-            {
-                // user_filght_subscribe(s);
-                user_del_subscribe(user, flight_number);
-                sleep(1);
+            if (user_filght_del_subscribe(s) == 1)
+            { // 成功修改航班系统
+                // 再安全删除用户端的预订记录
+                if (user_del_subscribe(user, flight_number) == 0)
+                {
+                    printf("警告：用户预订记录删除失败，但航班座位已释放！\n");
+                }
             }
+            sleep(1);
             break;
         }
 
         case USER_LOOK_SUBSCRUBE:
-
+            user_look_flight(user);
             break;
 
         case USER_LOG_OUT:
@@ -291,6 +292,17 @@ void admin_login_menu(FlightSystem *s)
     }
     printf("\n");
 }
+
+// 管理员菜单变量
+enum ADMINMENU
+{
+    ADMIN_WRITE_ADD = 1,
+    ADMIN_UPDATA,
+    ADMIN_DEL,
+    ADMIN_FLIGHT_FIND,
+    ADMIN_USER_FIND,
+    ADMIN_LOG_OUT,
+};
 // 管理员菜单
 void admin_menu(FlightSystem *s)
 {
@@ -311,10 +323,18 @@ void admin_menu(FlightSystem *s)
 
         switch (selected)
         {
-        case 4:
+        case ADMIN_WRITE_ADD:
+            add_filght(s);
+            break;
+        case ADMIN_UPDATA:
+            break;
+        case ADMIN_DEL:
+            break;
+
+        case ADMIN_FLIGHT_FIND:
             displayFlightInfo(s);
             break;
-        case 5:
+        case ADMIN_USER_FIND:
         {
             // 查询已经注册的用户   -----------------------------后续需要放进管理员用户权限中;
             system("clear");
@@ -362,8 +382,7 @@ void admin_menu(FlightSystem *s)
             getchar();
             break;
         }
-
-        case 6:
+        case ADMIN_LOG_OUT:
             return;
         default:
             break;

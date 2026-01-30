@@ -92,7 +92,7 @@ int user_subscribe(User *users, const char *flight_number)
     }
 
     list_add_tail(&us->list, &users->subscribe_list);
-    printf("恭喜%s\n", users->username);
+    printf("恭喜%s,，您已成功预订航班 %s\n", users->username, flight_number);
 
     return 1;
 }
@@ -106,6 +106,7 @@ int user_del_subscribe(User *users, const char *flight_number)
     }
 
     UserSubscribe *pos, *n;
+    int found = 0;
     list_for_each_entry_safe(pos, n, &users->subscribe_list, list)
     {
         if (strcmp(pos->flight_number, flight_number) == 0)
@@ -114,18 +115,66 @@ int user_del_subscribe(User *users, const char *flight_number)
             {                    // 只有已预订状态可以取消
                 pos->status = 2; // 取消预定
                 list_del(&pos->list);
+
                 free(pos);
+                printf("已成功取消航班 %s 的预订\n", flight_number);
                 return 1;
             }
+            else
+            {
+                printf("该航班预订状态异常（%s),无法取消！\n",
+                       pos->status == 1 ? "已使用" : "已取消");
+                return 0;
+            }
+            found = 1;
         }
     }
-    printf("未找到该航班的预订记录或已使用/已取消！\n");
+    if (!found)
+    {
+        printf("未找到航班号 %s 的有效预订记录！\n", flight_number);
+        return 0;
+    }
     return 0;
 }
 
 // 用户航班查询
 int user_look_flight(User *users)
 {
+    system("clear");
+    printf("\n========== %s 的航班预订记录 ==========\n", users->username);
+    printf(" %s | %s\n", "序号", "航班号");
+    printf("-----|------------\n");
+
+    if (list_empty(&users->subscribe_list))
+    {
+        printf("暂无任何预订记录！\n");
+        printf("\n按任意键返回...");
+        getchar();
+        getchar();
+        return 0;
+    }
+
+    int count = 1;
+    UserSubscribe *pos;
+    int flag_flight_look = 0;
+
+    list_for_each_entry(pos, &users->subscribe_list, list)
+    {
+        flag_flight_look = 1;
+
+        printf(" %d | %s\n", count++, pos->flight_number);
+    }
+
+    if (!flag_flight_look)
+    {
+        printf("暂无有效预订记录！\n");
+    }
+
+    printf("=========================================\n");
+    printf("按任意键返回...");
+    getchar();
+    getchar();
+    return 1;
 }
 
 // 查找用户

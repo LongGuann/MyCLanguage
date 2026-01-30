@@ -1,5 +1,7 @@
 #include "flight.h"
 
+extern char flight_number[20];
+
 Flight *newFilght(char *flight_number,  // 航班号
                   char *destination,    // 终点站
                   char *departure_city, // 始发站
@@ -425,10 +427,9 @@ int user_filght_subscribe(FlightSystem *s)
             {
                 if (p->remaining_seats > 0)
                 {
-
                     p->remaining_seats--;
-                    p->total_seats--;
-                    printf("成功预定了航班号为%s的航班 \n", flightNUmber);
+                    strcpy(flight_number, flightNUmber); // 保存航班号
+                    // printf("成功预定了航班号为%s的航班 \n", flightNUmber);
                     return 1;
                 }
                 else if (p->remaining_seats == 0)
@@ -438,6 +439,7 @@ int user_filght_subscribe(FlightSystem *s)
                 }
             }
         }
+        printf("未找到该航班，请重新输入\n");
     }
 }
 
@@ -463,8 +465,8 @@ int user_filght_del_subscribe(FlightSystem *s)
             {
 
                 p->remaining_seats++;
-                p->total_seats++;
                 printf("成功取消了航班号为%s的航班 \n", flightNUmber);
+                strcpy(flight_number, flightNUmber); // 保存到全局变量
                 return 1;
             }
         }
