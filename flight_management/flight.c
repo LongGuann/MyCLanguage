@@ -33,6 +33,7 @@ enum FLIGHTINFO
     FLIGHT_DESTINATION,
     FLIGHT_TIME,
     FLIGHT_PRICE,
+    FLIGHT_ALL,
 };
 
 FlightSystem *initFilghtSystem()
@@ -72,7 +73,8 @@ void displayFlightInfo(FlightSystem *s)
     {
         printf("航班号 %s \n", p->flight_number);
         printf("出发地 %s -> 目的地 %s \n", p->departure_city, p->destination);
-        printf("本航班机票价格 %d", p->price);
+        printf("本航班机票价格 %f元\n", p->price);
+        printf("本次航班剩余 %d票\n", p->total_seats);
         printf("出发时间 %d年 %d月 %d日 %d时 %d分 \n", p->departure_time.year,
                p->departure_time.month,
                p->departure_time.day,
@@ -92,6 +94,7 @@ void displayFlightInfo(FlightSystem *s)
         }
     }
 }
+
 // 航班查询 - 航班号版本
 void displayFlightInfoNumber(FlightSystem *s, char *flightNumber)
 {
@@ -112,7 +115,8 @@ void displayFlightInfoNumber(FlightSystem *s, char *flightNumber)
         {
             printf("航班号 %s \n", p->flight_number);
             printf("出发地 %s -> 目的地 %s \n", p->departure_city, p->destination);
-            printf("本航班机票价格 %d", p->price);
+            printf("本航班机票价格 %f元\n", p->price);
+            printf("本次航班剩余 %d票\n", p->total_seats);
             printf("出发时间 %d年 %d月 %d日 %d时 %d分 \n", p->departure_time.year,
                    p->departure_time.month,
                    p->departure_time.day,
@@ -154,7 +158,8 @@ void displayFlightInfoDeparture(FlightSystem *s, char *departure)
         {
             printf("航班号 %s \n", p->flight_number);
             printf("出发地 %s -> 目的地 %s \n", p->departure_city, p->destination);
-            printf("本航班机票价格 %d", p->price);
+            printf("本航班机票价格 %f元\n", p->price);
+            printf("本次航班剩余 %d票\n", p->total_seats);
             printf("出发时间 %d年 %d月 %d日 %d时 %d分 \n", p->departure_time.year,
                    p->departure_time.month,
                    p->departure_time.day,
@@ -196,7 +201,8 @@ void displayFlightInfoDestination(FlightSystem *s, char *destination)
         {
             printf("航班号 %s \n", p->flight_number);
             printf("出发地 %s -> 目的地 %s \n", p->departure_city, p->destination);
-            printf("本航班机票价格 %d", p->price);
+            printf("本航班机票价格 %f元\n", p->price);
+            printf("本次航班剩余 %d票\n", p->total_seats);
             printf("出发时间 %d年 %d月 %d日 %d时 %d分 \n", p->departure_time.year,
                    p->departure_time.month,
                    p->departure_time.day,
@@ -238,7 +244,8 @@ void displayFlightInfoTime(FlightSystem *s, DateTime data)
         {
             printf("航班号 %s \n", p->flight_number);
             printf("出发地 %s -> 目的地 %s \n", p->departure_city, p->destination);
-            printf("本航班机票价格 %d", p->price);
+            printf("本航班机票价格 %f元\n", p->price);
+            printf("本次航班剩余 %d票\n", p->total_seats);
             printf("出发时间 %d年 %d月 %d日 %d时 %d分 \n", p->departure_time.year,
                    p->departure_time.month,
                    p->departure_time.day,
@@ -283,7 +290,8 @@ void displayFlightInfoFrice(FlightSystem *s, float price)
         {
             printf("航班号 %s \n", p->flight_number);
             printf("出发地 %s -> 目的地 %s \n", p->departure_city, p->destination);
-            printf("本航班机票价格 %d", p->price);
+            printf("本航班机票价格 %f元\n", p->price);
+            printf("本次航班剩余 %d票\n", p->total_seats);
             printf("出发时间 %d年 %d月 %d日 %d时 %d分 \n", p->departure_time.year,
                    p->departure_time.month,
                    p->departure_time.day,
@@ -304,6 +312,7 @@ void displayFlightInfoFrice(FlightSystem *s, float price)
         }
     }
 }
+
 // 航班查询用户多样版本
 void displayFlightInfoUser(FlightSystem *s)
 {
@@ -319,7 +328,8 @@ void displayFlightInfoUser(FlightSystem *s)
         printf("3. 航班目的地查询 \n");
         printf("4. 航班出发时间查询 \n");
         printf("5. 航班价格查询 \n");
-        printf("6. 退出查询 \n");
+        printf("6. 所有航班\n");
+        printf("7. 退出查询 \n");
 
         printf("请选择: ");
         scanf("%d", (int *)&selected);
@@ -382,11 +392,90 @@ void displayFlightInfoUser(FlightSystem *s)
             displayFlightInfoFrice(s, ch_frice);
 
             break;
+        case FLIGHT_ALL:
+            system("clear");
+            displayFlightInfo(s);
+            break;
         default:
             return;
             break;
         }
     }
+}
+
+// 航班预定 - 用户
+int user_filght_subscribe(FlightSystem *s)
+{
+    system("clear");
+    while (1)
+    {
+
+        char flightNUmber[20];
+        printf("请输入要预定的航班号: ");
+        scanf("%s", flightNUmber);
+        int c;
+        while ((c = getchar()) != '\n' && c != EOF)
+            ;
+        struct list_head *head = &(s->flights->list);
+        Flight *p;
+
+        list_for_each_entry(p, head, list)
+        {
+            if (strcmp(flightNUmber, p->flight_number) == 0)
+            {
+                if (p->remaining_seats > 0)
+                {
+
+                    p->remaining_seats--;
+                    p->total_seats--;
+                    printf("成功预定了航班号为%s的航班 \n", flightNUmber);
+                    return 1;
+                }
+                else if (p->remaining_seats == 0)
+                {
+                    printf("航班预定失败,该航班已经满座");
+                    return 0;
+                }
+            }
+        }
+    }
+}
+
+// 航班取消预定 - 用户
+int user_filght_del_subscribe(FlightSystem *s)
+{
+    system("clear");
+    while (1)
+    {
+
+        char flightNUmber[20];
+        printf("请输入要取消的航班号: ");
+        scanf("%s", flightNUmber);
+        int c;
+        while ((c = getchar()) != '\n' && c != EOF)
+            ;
+        struct list_head *head = &(s->flights->list);
+        Flight *p;
+
+        list_for_each_entry(p, head, list)
+        {
+            if (strcmp(flightNUmber, p->flight_number) == 0)
+            {
+
+                p->remaining_seats++;
+                p->total_seats++;
+                printf("成功取消了航班号为%s的航班 \n", flightNUmber);
+                return 1;
+            }
+        }
+        printf("未查询到该趟航班的预定信息,请重新输入");
+        return 0;
+    }
+}
+
+// 航班预定查询 - 用户
+void user_filght_look(FlightSystem *s)
+{
 }
 
 // 航班数据
@@ -399,8 +488,9 @@ void moco_data(FlightSystem *s)
         .hour = 9,     // 时
         .minute = 45}; // 分
 
-    Flight *f = newFilght("NH3601", "北京", "广州", 900, 300, date);
-
+    Flight *f = newFilght("NH3601", "北京", "广州", 900, 0, date);
+    f->remaining_seats = f->total_seats;
+    f->remaining_seats = 0;
     list_add_tail(&f->list, &(s->flights->list));
 
     s->flight_count++;
@@ -408,14 +498,14 @@ void moco_data(FlightSystem *s)
     date.hour = 10;
 
     f = newFilght("NH3602", "上海", "广州", 400, 400, date);
-
+    f->remaining_seats = f->total_seats;
     list_add_tail(&f->list, &(s->flights->list));
     s->flight_count++;
 
     date.hour = 11;
 
     f = newFilght("NH3603", "呼和浩特", "广州", 300, 300, date);
-
+    f->remaining_seats = f->total_seats;
     list_add_tail(&f->list, &(s->flights->list));
 
     s->flight_count++;
@@ -423,7 +513,7 @@ void moco_data(FlightSystem *s)
     date.hour = 12;
 
     f = newFilght("NH3607", "乌鲁木齐", "广州", 200, 200, date);
-
+    f->remaining_seats = f->total_seats;
     list_add_tail(&f->list, &(s->flights->list));
     s->flight_count++;
 }

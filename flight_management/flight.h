@@ -1,6 +1,7 @@
 #ifndef _INC_FLIGHT
 #define _INC_FLIGHT
 #include "common.h"
+
 // enum FLIGHT_STATUS {
 
 // }
@@ -55,6 +56,12 @@ void displayFlightInfoTime(FlightSystem *s, DateTime time);
 void displayFlightInfoFrice(FlightSystem *s, float price);
 
 void displayFlightInfoUser(FlightSystem *s);
+
+int user_filght_subscribe(FlightSystem *s);
+
+int user_filght_del_subscribe(FlightSystem *s);
+
+void user_filght_look(FlightSystem *s);
 
 void moco_data(FlightSystem *s);
 
