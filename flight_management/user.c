@@ -63,8 +63,26 @@ int user_login(User *users, const char *username, const char *password)
 // 用户注销
 int user_logout(User *users, const char *username)
 {
-    printf("用户 %s 注销了!! \n", username);
-    return 1;
+    struct list_head *head = &(users->list);
+    User *pos, *n;
+    User *use = NULL;
+    list_for_each_entry_safe(pos, n, head, list)
+    {
+        printf("%s 注销中", pos->username);
+        if (strcmp(pos->username, username) == 0)
+        {
+            list_del(&pos->list);
+            use = pos;
+            free(pos);
+            return 1;
+        }
+    }
+    if (use == NULL)
+    {
+        printf("未找到用户 %s \n", username);
+        sleep(1);
+        return -1;
+    }
 }
 
 // 用户航班预定

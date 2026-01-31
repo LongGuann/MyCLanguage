@@ -199,7 +199,7 @@ enum USERMENU
     USER_FLIGHT_SUBSCRUBE,
     USER_DEL_SUBSCRUBE,
     USER_LOOK_SUBSCRUBE,
-    USER_LOG_OUT,
+    USER_LOG_OUT_DEL,
 };
 
 // 用户菜单
@@ -214,7 +214,8 @@ void user_menu(FlightSystem *s)
         printf("2. 预定航班\n");
         printf("3. 取消预定\n");
         printf("4. 查看我的预定\n");
-        printf("5. 退出登录\n");
+        printf("5. 注销用户\n");
+        printf("6. 退出登录\n");
         printf("请选择: ");
         int selected = 0;
 
@@ -256,11 +257,24 @@ void user_menu(FlightSystem *s)
             user_look_flight(user);
             break;
 
-        case USER_LOG_OUT:
+        case USER_LOG_OUT_DEL:
+        {
+            char user_scan_name[20];
+            printf("请输入待注销的用户!\n");
+            scanf("%s", user_scan_name);
+            int c1;
+            while ((c1 = getchar()) != '\n' && c1 != EOF)
+                ;
+            if (user_logout(user, user_scan_name))
+            {
+                printf("注销成功!");
+            }
+            main_menu(s);
+        }
+
+        default:
             printf("退出成功!\n");
             return;
-            break;
-        default:
             break;
         }
     }
@@ -367,25 +381,6 @@ void admin_menu(FlightSystem *s)
                 {
                     User *user = list_entry(pos, User, list);
                     printf("%d. 用户名：%s\n", count++, user->username);
-                }
-                User *Pos;
-                if (!list_empty(&Pos->subscribe_list))
-                {
-                    printf("   预订记录:\n");
-                    Flight *us;
-                    int sub_count = 1;
-                    list_for_each_entry(us, &Pos->subscribe_list, list)
-                    {
-                        printf("     %d. 航班号: %s, 预订时间: %d-%02d-%02d %02d:%02d\n",
-                               sub_count++, us->flight_number,
-                               us->departure_time.year, us->departure_time.month,
-                               us->departure_time.day, us->departure_time.hour,
-                               us->departure_time.minute);
-                    }
-                }
-                else
-                {
-                    printf("   暂无预订记录\n");
                 }
             }
             printf("按任意键继续...");
