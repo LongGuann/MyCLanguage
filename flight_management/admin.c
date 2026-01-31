@@ -105,7 +105,7 @@ void add_filght(FlightSystem *s)
     while (1) // 航班价格录入
     {
         printf("请输入本次航班的售卖票价!\n");
-        scanf("%f", new_flight->price);
+        scanf("%f", &new_flight->price);
         clear_input_buffer();
         if (new_flight->price > 0)
         {
@@ -187,7 +187,7 @@ void add_filght(FlightSystem *s)
     getchar();
 }
 // 航班信息更新
-int update_filght_info(FlightSystem *s, const char *flight_number)
+void update_filght_info(FlightSystem *s, const char *flight_number)
 {
     if (s == NULL || s->flights == NULL)
     {
@@ -197,25 +197,291 @@ int update_filght_info(FlightSystem *s, const char *flight_number)
     }
     system("clear");
 
-    printf("--------------------\n");
-    printf("请输入航班的录入信息\n");
-    printf("--------------------\n");
+    // 先查找航班是否存在
+    struct list_head *head = &(s->flights->list);
+    Flight *flight = NULL;
+    Flight *p;
 
+    list_for_each_entry(p, head, list)
+    {
+        if (strcmp(p->flight_number, flight_number) == 0)
+        {
+            flight = p;
+            break;
+        }
+    }
+
+    if (flight == NULL)
+    {
+        printf("未找到航班号为 %s 的航班\n", flight_number);
+        return;
+    }
+    system("clear");
+    printf("当前航班信息：\n");
+    printf("航班号: %s\n", flight->flight_number);
+    printf("出发地: %s\n", flight->departure_city);
+    printf("目的地: %s\n", flight->destination);
+    printf("价格: %f\n", flight->price);
+    printf("总座位数: %d\n", flight->total_seats);
+    printf("剩余座位: %d\n", flight->remaining_seats);
+    printf("出发时间: %d-%d-%d %d:%d\n",
+           flight->departure_time.year,
+           flight->departure_time.month,
+           flight->departure_time.day,
+           flight->departure_time.hour,
+           flight->departure_time.minute);
+
+    printf("-----请选择需要更新的航班信息！-----\n");
+    printf("1. 航班号更新 : \n");
+    printf("2. 航班出发地更新 : \n");
+    printf("3. 航班目的地更新 : \n");
+    printf("4. 航班价格更新 : \n");
+    printf("5. 航班出发时间更新 : \n");
+    printf("6. 航班可售座位数更新 : \n");
+    printf("7. 退出航班更新信息系统\n");
+
+    int selected;
+    scanf("%d", &selected);
+    switch (selected)
+    {
+    case 1: //  航班号修改
+    {
+        char new_number[20];
+        printf("请输入需要更新成为的航班号！\n");
+        scanf("%s", new_number);
+        clear_input_buffer();
+        updata_flight_info_number(s, flight->flight_number, new_number);
+        break;
+    }
+
+    case 2: // 出发地修改
+    {
+        char new_departurecity[20];
+        printf("请输入新的出发地\n");
+        scanf("%s", new_departurecity);
+        clear_input_buffer();
+        updata_flight_info_departurecity(s, flight->departure_city, new_departurecity);
+        break;
+    }
+
+    case 3: // 目的地修改
+    {
+        char new_destination[20];
+        printf("请输入新的目的地\n");
+        scanf("%s", new_destination);
+        clear_input_buffer();
+        updata_flight_info_departurecity(s, flight->destination, new_destination);
+        break;
+    }
+
+    case 4: // 价格修改
+    {
+        float new_price;
+        printf("请输入新的票价\n");
+        scanf("%f", &new_price);
+        clear_input_buffer();
+        updata_flight_info_pirce(s, flight->price, new_price);
+        break;
+    }
+
+    case 5: // 出发时间修改
+    {
+        DateTime new_time;
+        printf("请输入新的出发时间（年 月 日 时 分）: ");
+        scanf("%d %d %d %d %d",
+              &new_time.year, &new_time.month, &new_time.day,
+              &new_time.hour, &new_time.minute);
+        clear_input_buffer();
+
+        flight->departure_time = new_time;
+        printf("出发时间已更新\n");
+        break;
+    }
+
+    case 6: // 可售票数更改
+    {
+        int new_total;
+        printf("请输入新的总座位数: ");
+        scanf("%d", &new_total);
+        clear_input_buffer();
+        int seat_difference = new_total - flight->total_seats;
+        flight->total_seats = new_total;
+        flight->remaining_seats += seat_difference;
+
+        if (flight->remaining_seats < 0)
+        {
+            flight->remaining_seats = 0;
+        }
+
+        printf("总座位数已更新为: %d\n", new_total);
+        break;
+    }
+    case 7:
+        /* code */
+        return;
+
+    default:
+        break;
+    }
+
+    printf("更新成功 \n");
+    printf("航班更新已完成!\n");
+    printf("本次更新的航班信息为\n");
+    printf("------------------------");
+    printf("航班号 %s \n", flight->flight_number);
+    printf("当前航班信息：\n");
+    printf("航班号: %s\n", flight->flight_number);
+    printf("出发地: %s\n", flight->departure_city);
+    printf("目的地: %s\n", flight->destination);
+    printf("价格: %f\n", flight->price);
+    printf("总座位数: %d\n", flight->total_seats);
+    printf("剩余座位: %d\n", flight->remaining_seats);
+    printf("出发时间: %d-%d-%d %d:%d\n",
+           flight->departure_time.year,
+           flight->departure_time.month,
+           flight->departure_time.day,
+           flight->departure_time.hour,
+           flight->departure_time.minute);
+    printf("-------------------------\n");
+    printf("\n按任意键返回菜单...");
+    getchar();
+    return;
+}
+
+// 航班信息更新  -- 航班号
+void updata_flight_info_number(FlightSystem *s, char *flight_number, char *new_number)
+{
+    if (s == NULL || flight_number == NULL)
+    {
+        printf("错误，请初始化航班！\n");
+        return;
+    }
     struct list_head *head = &(s->flights->list);
     Flight *p;
 
     list_for_each_entry(p, head, list)
     {
+        if (strcmp(p->flight_number, flight_number) == 0)
+        {
+            // 更新节点数据  // 航班号
+            strncpy(p->flight_number, new_number, sizeof(p->flight_number) - 1);
+            printf("已更新航班号%s  ---->  %s", flight_number, new_number);
+            return;
+        }
     }
-    printf("更新成功 \n");
-    return 1;
+}
+
+// 航班信息修改  -- 出发地
+void updata_flight_info_departurecity(FlightSystem *s, char *departure_city, char *new_city)
+{
+    if (s == NULL || departure_city == NULL)
+    {
+        printf("错误，请初始化航班！\n");
+        return;
+    }
+    struct list_head *head = &(s->flights->list);
+    Flight *p;
+
+    list_for_each_entry(p, head, list)
+    {
+        if (strcmp(p->departure_city, new_city) == 0)
+        {
+            // 更新节点数据  // 航班号
+            strncpy(p->departure_city, new_city, sizeof(p->departure_city) - 1);
+            printf("已更新出发地%s  ---->  %s", departure_city, new_city);
+            return;
+        }
+    }
+}
+
+// 航班信息更新  -- 目的地
+void updata_flight_info_destination(FlightSystem *s, char *destination, char *new_destination)
+{
+    if (s == NULL || destination == NULL)
+    {
+        printf("错误，请初始化航班！\n");
+        return;
+    }
+    struct list_head *head = &(s->flights->list);
+    Flight *p;
+
+    list_for_each_entry(p, head, list)
+    {
+        if (strcmp(p->destination, new_destination) == 0)
+        {
+            // 更新节点数据  // 航班号
+            strncpy(p->destination, new_destination, sizeof(p->destination) - 1);
+            printf("已更新目的地%s  ---->  %s", destination, new_destination);
+            return;
+        }
+    }
+}
+// 航班信息更新  -- 价格
+void updata_flight_info_pirce(FlightSystem *s, float flight_price, float new_price)
+{
+    if (s == NULL)
+    {
+        printf("错误，请初始化航班！\n");
+        return;
+    }
+    struct list_head *head = &(s->flights->list);
+    Flight *p;
+
+    list_for_each_entry(p, head, list)
+    {
+        if (flight_price != new_price)
+        {
+            // 更新节点数据  // 航班号
+            p->price = new_price;
+            printf("已更新 价格%lf  ---->  %lf", flight_price, new_price);
+            return;
+        }
+    }
+}
+// 航班信息更新  -- 出发时间
+void updata_flight_info_time(FlightSystem *s, DateTime flight_time, DateTime new_time)
+{
+}
+// 航班信息更新  -- 可售票数
+void updata_flight_info_total(FlightSystem *s, int flight_total, int new_total)
+{
 }
 
 // 航班删除
 int delete_filght(FlightSystem *s, const char *flight_number)
 {
-    printf("航班删除成功 \n");
-    return 1;
+    system("clear");
+    if (s == NULL || s->flights == NULL)
+    {
+        printf("航班未初始化!,请管理员初始化航班\n");
+        sleep(1);
+        return -1;
+    }
+
+    // 先查找航班是否存在
+    struct list_head *head = &(s->flights->list);
+    Flight *flight = NULL;
+    Flight *p;
+    Flight *n;
+
+    list_for_each_entry_safe(p, n, head, list)
+    {
+        printf("%s ", p->flight_number);
+        if (strcmp(p->flight_number, flight_number) == 0)
+        {
+            list_del(&p->list);
+            flight = p;
+            free(p);
+            return 1;
+        }
+    }
+    printf("\n");
+    if (flight == NULL)
+    {
+        printf("未找到航班号为 %s 的航班\n", flight_number);
+        sleep(1);
+        return -1;
+    }
 }
 
 // 用户航班预定查询

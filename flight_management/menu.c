@@ -303,6 +303,7 @@ enum ADMINMENU
     ADMIN_USER_FIND,
     ADMIN_LOG_OUT,
 };
+
 // 管理员菜单
 void admin_menu(FlightSystem *s)
 {
@@ -327,8 +328,18 @@ void admin_menu(FlightSystem *s)
             add_filght(s);
             break;
         case ADMIN_UPDATA:
+            printf("请输入需要更新的航班号： \n");
+            char flight_number_updata[20];
+            scanf("%s", flight_number_updata);
+            update_filght_info(s, flight_number_updata);
             break;
-        case ADMIN_DEL:
+        case ADMIN_DEL: // 删除航班
+            printf("请输入需要删除的航班号： \n");
+            char flight_number_del[20];
+            scanf("%s", flight_number_del);
+            delete_filght(s, flight_number_del);
+            printf("航班删除成功 \n");
+            sleep(1);
             break;
 
         case ADMIN_FLIGHT_FIND:
