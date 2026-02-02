@@ -1,13 +1,5 @@
 #include "menu.h"
 
-// 更新输入缓冲区
-static void clear_input_buffer()
-{
-    int c;
-    while ((c = getchar()) != '\n' && c != EOF)
-        ;
-}
-
 enum MAINMENU
 {
     MAIN_FIND_GOODS = 1,
@@ -19,7 +11,7 @@ enum MAINMENU
     MAIN_FIND_PUT_RECORD,
 };
 
-void main_menu(GoodsSystem *goods)
+void main_menu(GoodsSystem *Goods)
 {
     while (1)
     {
@@ -37,13 +29,13 @@ void main_menu(GoodsSystem *goods)
         printf("\t8. 退出系统\n");
 
         printf("请选择需要查询的方式: \n");
-        sacnf("%d", (int *)select);
+        scanf("%d", (int *)&select);
         clear_input_buffer();
 
         switch (select)
         {
         case MAIN_FIND_GOODS:
-            /* code */
+            find_goods_menu(Goods);
             break;
         case MAIN_UPDATA_GOODS:
             /* code */
@@ -77,13 +69,14 @@ enum FINDGOODENMU
     FIND_NAME,
     FIND_CATEGORY,
     FIND_LOCATION,
+    FIND_ALL,
 };
 
-void find_goods_menu(GoodsSystem *s)
+void find_goods_menu(GoodsSystem *Goods)
 {
     while (1)
     {
-        enum FINDGOODENMU select;
+        int select;
         system("clear");
 
         printf("\n-------------欢迎来到物品查询页面----------\n");
@@ -91,9 +84,33 @@ void find_goods_menu(GoodsSystem *s)
         printf("\t 2. 物品名称\n");
         printf("\t 3. 物品类别\n");
         printf("\t 4. 物品位置\n");
+        printf("\t 5. 全部物品\n");
+        printf("\t 6. 退出查询\n");
 
         printf("请选择需要查询的方式: \n");
-        sacnf("%d", (int *)select);
+        scanf("%d", &select);
         clear_input_buffer();
+
+        switch (select)
+        {
+        case FIND_ID:
+            /* code */
+            break;
+        case FIND_NAME:
+            /* code */
+            break;
+        case FIND_CATEGORY:
+            /* code */
+            break;
+        case FIND_LOCATION:
+            /* code */
+            break;
+        case FIND_ALL:
+            find_Goods_All(Goods);
+            break;
+        default:
+            return;
+            break;
+        }
     }
 }

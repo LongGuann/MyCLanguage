@@ -23,7 +23,7 @@ typedef struct goods //  物品节点
     int goods_quantity;      // 数量
     double goods_weight;     // 物品重量
     DateTime put_time;       // 入库时间
-    DateTime out_time;       // 出库时间
+    char out_time[20];       // 出库时间
     struct list_head list;
 } Goods;
 
@@ -44,6 +44,7 @@ Goods *newGoods(char *goods_id,       // 物品编号
 
 GoodsSystem *initGoods();
 
+void find_Goods_All(GoodsSystem *Goods);
 void find_Goods_by_id(GoodsSystem *goods, const char *id);             // id查询物品
 void find_Goods_by_name(GoodsSystem *goods, const char *name);         // name查询物品
 void find_Goods_by_category(GoodsSystem *goods, const char *category); // 类别查询物品
@@ -55,4 +56,5 @@ void delete_Goods(GoodsSystem *goods, const char *delete_goods_id); // 删除物
 
 void display_Goods(GoodsSystem goods); // 显示物品信息
 
+void moco_data(GoodsSystem *goods);
 #endif

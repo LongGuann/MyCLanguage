@@ -8,4 +8,7 @@
 #include "kernel_list.h"
 #include <time.h>
 
+void menuout();
+void clear_input_buffer();
+
 #endif
