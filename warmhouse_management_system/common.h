@@ -10,5 +10,6 @@
 
 void menuout();
 void clear_input_buffer();
+int is_datetime(int year, int month, int day, int hour, int minute);
 
 #endif

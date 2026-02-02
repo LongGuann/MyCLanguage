@@ -44,14 +44,23 @@ Goods *newGoods(char *goods_id,       // 物品编号
 
 GoodsSystem *initGoods();
 
+void printGoodsInfo(Goods *goods);
+
 void find_Goods_All(GoodsSystem *Goods);
+void find_Goods_All_id(GoodsSystem *goods);
 void find_Goods_by_id(GoodsSystem *goods, const char *id);             // id查询物品
 void find_Goods_by_name(GoodsSystem *goods, const char *name);         // name查询物品
 void find_Goods_by_category(GoodsSystem *goods, const char *category); // 类别查询物品
 void find_Goods_by_location(GoodsSystem *goods, const char *location); // 存放位置查询物品
 
-void add_Goods(GoodsSystem *goods);                                 // 添加物品
-void update_Goods(GoodsSystem *goods, GoodsSystem updated_goods);   // 更新物品信息
+void add_Goods(GoodsSystem *goods); // 添加物品
+
+void update_Goods(GoodsSystem *goods, const char *updated_goods); // 更新物品信息
+
+void updata_goods_id(GoodsSystem *goods, char *goods_id, char *new_id);
+void updata_goods_name(GoodsSystem *goods, char *goods_name, char *new_name);             // 更新物品名称
+void updata_goods_category(GoodsSystem *goods, char *goods_category, char *new_category); // 更新物品类别
+
 void delete_Goods(GoodsSystem *goods, const char *delete_goods_id); // 删除物品
 
 void display_Goods(GoodsSystem goods); // 显示物品信息
