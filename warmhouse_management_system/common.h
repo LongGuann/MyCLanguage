@@ -6,5 +6,6 @@
 #include <string.h>
 #include <unistd.h>
 #include "kernel_list.h"
+#include <time.h>
 
 #endif

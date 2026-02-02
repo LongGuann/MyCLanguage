@@ -1,7 +1,7 @@
 #include "menu.h"
 
 // 更新输入缓冲区
-void clear_input_buffer()
+static void clear_input_buffer()
 {
     int c;
     while ((c = getchar()) != '\n' && c != EOF)
@@ -11,6 +11,12 @@ void clear_input_buffer()
 enum MAINMENU
 {
     MAIN_FIND_GOODS = 1,
+    MAIN_UPDATA_GOODS,
+    MAIN_DEL_GOODS,
+    MAIN_PUT_GOODS,
+    MAIN_OUT_GOODS,
+    MAIN_GENERATION,
+    MAIN_FIND_PUT_RECORD,
 };
 
 void main_menu(GoodsSystem *goods)
@@ -28,9 +34,39 @@ void main_menu(GoodsSystem *goods)
         printf("\t5. 物品出库\n");
         printf("\t6. 报表生成\n");
         printf("\t7. 入库记录查询\n");
+        printf("\t8. 退出系统\n");
 
         printf("请选择需要查询的方式: \n");
         sacnf("%d", (int *)select);
+        clear_input_buffer();
+
+        switch (select)
+        {
+        case MAIN_FIND_GOODS:
+            /* code */
+            break;
+        case MAIN_UPDATA_GOODS:
+            /* code */
+            break;
+        case MAIN_DEL_GOODS:
+            /* code */
+            break;
+        case MAIN_PUT_GOODS:
+            /* code */
+            break;
+        case MAIN_OUT_GOODS:
+            /* code */
+            break;
+        case MAIN_GENERATION:
+            /* code */
+            break;
+        case MAIN_FIND_PUT_RECORD:
+            /* code */
+            break;
+
+        default:
+            break;
+        }
     }
 }
 
@@ -58,5 +94,6 @@ void find_goods_menu(GoodsSystem *s)
 
         printf("请选择需要查询的方式: \n");
         sacnf("%d", (int *)select);
+        clear_input_buffer();
     }
 }
