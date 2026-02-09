@@ -1,15 +1,14 @@
 #include <stdio.h>
 
+void func(int *p)
+{
+  p++;
+}
 int main()
 {
-  char c = 250;
-  unsigned char d;
-  char f;
-  d = c + 249;
-  f = c + 249;
-  printf("d = %d\n", d); // -243
-  printf("d = %u\n", d); //
-  printf("f = %d\n", f);
-  printf("f = %u\n", f);
+  int a[] = {1, 2, 3, 4, 5};
+  int *p = a;
+  func(p);
+  printf("%d\n", *(++p));
   return 0;
 }
